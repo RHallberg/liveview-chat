@@ -9,6 +9,14 @@
     <% end %>
   </div>
 
-  <%= f = form_for :chat, "#", id: "chat-form", phx_submit: :submit_message%>
-    <%= text_input f, :message, placeholder: "Enter message" %>
+  <.form
+    let={f}
+    for={:chat}
+    id="chat-form"
+    action="#"
+    phx_submit={:submit_message}
+    phx_hook="ChatForm"
+  >
+    <%= text_input f, :message, value: @message, placeholder: "Enter message" %>
+  </.form>
 </div>

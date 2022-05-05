@@ -12,6 +12,7 @@ defmodule ChatWeb.RoomLive do
         socket,
         room_name: room_name,
         topic: topic,
+        message: "",
         messages: ["Someone joined the chat"],
         nbr_messages: 1,
         temporary_assigns: [messages: []]
@@ -22,7 +23,7 @@ defmodule ChatWeb.RoomLive do
   def handle_event("submit_message", %{"chat" => %{"message" => message}}, socket) do
     Logger.info(message: message)
     ChatWeb.Endpoint.broadcast(socket.assigns.topic, "new-message", message)
-    {:noreply, socket}
+    {:noreply, assign(socket, message: "")}
   end
 
   @impl true
