@@ -1,0 +1,12 @@
+<section class="phx-hero">
+  <h1><%= gettext "Welcome to %{name}!", name: "Rickard's app" %></h1>
+  <p>Consume my shorts. Cowabunga</p>
+</section>
+
+<section class="row">
+  <p>
+    <%= Faker.Lorem.paragraph %>
+  </p>
+</section>
+
+<button phx-click="random-room" title="Create a random room">Create a random room</button>
