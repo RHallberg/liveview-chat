@@ -1,24 +1,33 @@
 <p>Currently chatting in <strong> <%= @room_name %> </strong> as <strong><%= @username%></strong></p>
 
 
-<div id="chat-container">
-  <div id="chat-messages" phx-update="append" phx-hook="ChatMessages">
-    <%= for message <- @messages do %>
-      <p id={"msg-#{@nbr_messages}"} class="message">
-      <strong><%= message.username %>:</strong>  <%= message.content %>
-      </p>
-      <hr id={"hr-#{@nbr_messages}"}>
-    <% end %>
+<div id="chat-container" class="flex-container">
+  <div id="chat-box">
+    <div id="chat-messages" phx-update="append" phx-hook="ChatMessages">
+      <%= for message <- @messages do %>
+        <p id={"msg-#{@nbr_messages}"} class="message">
+        <strong><%= message.username %>:</strong>  <%= message.content %>
+        </p>
+        <hr id={"hr-#{@nbr_messages}"}>
+      <% end %>
+    </div>
+
+    <.form
+      let={f}
+      for={:chat}
+      id="chat-form"
+      action="#"
+      phx_submit={:submit_message}
+      phx_hook="ChatForm"
+    >
+      <%= text_input f, :message, value: @message, placeholder: "Enter message" %>
+    </.form>
   </div>
 
-  <.form
-    let={f}
-    for={:chat}
-    id="chat-form"
-    action="#"
-    phx_submit={:submit_message}
-    phx_hook="ChatForm"
-  >
-    <%= text_input f, :message, value: @message, placeholder: "Enter message" %>
-  </.form>
+  <div id="user-list" class="flex-child">
+      <p class="title"><strong>Users in room:</strong></p>
+      <p>Placeholder user 1</p>
+      <p>Placeholder user 2</p>
+  </div>
+
 </div>

@@ -6,7 +6,10 @@ defmodule ChatWeb.RoomLive do
   def mount(params, _session, socket) do
     topic = "room:" <> params["id"]
     username = params["username"] || Faker.Internet.user_name
-    ChatWeb.Endpoint.subscribe(topic)
+     if connected?(socket) do
+      ChatWeb.Endpoint.subscribe(topic)
+      ChatWeb.Presence.track(self(), topic, username, %{})
+     end
 
     {:ok,
       assign(
@@ -15,7 +18,7 @@ defmodule ChatWeb.RoomLive do
         topic: topic,
         username: username,
         message: "",
-        messages: [%{username: "System", content: "#{username} joined the chat"}],
+        messages: [%{username: "System", content: "Welcome to the chat :)"}],
         nbr_messages: 1,
         temporary_assigns: [messages: []]
     )}
@@ -31,6 +34,17 @@ defmodule ChatWeb.RoomLive do
   @impl true
   def handle_info(%{event: "new-message", payload: message}, socket) do
     {:noreply, assign(socket, messages: [message], nbr_messages: (socket.assigns.nbr_messages + 1))}
+  end
+
+  @impl true
+  def handle_info(%{event: "presence_diff", payload: %{joins: joins, leaves: leaves}}, socket) do
+    join_messages = joins
+      |> Map.keys()
+      |> Enum.map(fn username -> %{username: "System", content: "#{username} joined"} end)
+    leave_messages = leaves
+      |> Map.keys()
+      |> Enum.map(fn username -> %{username: "System", content: "#{username} left"} end)
+    {:noreply, assign(socket, messages: join_messages ++ leave_messages, nbr_messages: (socket.assigns.nbr_messages + 1))}
   end
 
 end
