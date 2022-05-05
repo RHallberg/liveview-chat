@@ -1,4 +1,9 @@
+
+
+
 # Chat
+
+Elixir liveview test project based on https://www.youtube.com/watch?v=_rTFZbvMfJA
 
 To start your Phoenix server:
 
