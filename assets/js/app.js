@@ -30,6 +30,8 @@ let Hooks = {};
 Hooks.ChatForm = {
   updated(){
     this.el.querySelector("input#chat-form_message").value = ""
+    const chat = document.getElementById("chat-messages")
+    chat.scrollTop = chat.scrollHeight;
   }
 }
 

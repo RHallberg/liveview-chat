@@ -37,6 +37,10 @@ select {
   height: 500px;
 }
 
+#chat-messages{
+  overflow-y:auto;
+}
+
 #chat-container hr{
   margin: 0.5rem;
 }
