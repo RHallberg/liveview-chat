@@ -3,8 +3,9 @@
 
 # Chat
 
-Elixir liveview test project based on https://www.youtube.com/watch?v=_rTFZbvMfJA
+Elixir liveview toy project based on https://www.youtube.com/watch?v=_rTFZbvMfJA
 
+---
 To start your Phoenix server:
 
   * Install dependencies with `mix deps.get`
