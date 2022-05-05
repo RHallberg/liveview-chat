@@ -3,17 +3,19 @@ defmodule ChatWeb.RoomLive do
   require Logger
 
   @impl true
-  def mount(%{"id" => room_name}, _session, socket) do
-    topic = "room:" <> room_name
+  def mount(params, _session, socket) do
+    topic = "room:" <> params["id"]
+    username = params["username"] || Faker.Internet.user_name
     ChatWeb.Endpoint.subscribe(topic)
 
     {:ok,
       assign(
         socket,
-        room_name: room_name,
+        room_name: params["id"],
         topic: topic,
+        username: username,
         message: "",
-        messages: ["Someone joined the chat"],
+        messages: [%{username: "System", content: "#{username} joined the chat"}],
         nbr_messages: 1,
         temporary_assigns: [messages: []]
     )}
@@ -21,7 +23,7 @@ defmodule ChatWeb.RoomLive do
 
   @impl true
   def handle_event("submit_message", %{"chat" => %{"message" => message}}, socket) do
-    Logger.info(message: message)
+    message = %{username: socket.assigns.username , content: message }
     ChatWeb.Endpoint.broadcast(socket.assigns.topic, "new-message", message)
     {:noreply, assign(socket, message: "")}
   end
