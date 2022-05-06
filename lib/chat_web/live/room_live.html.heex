@@ -5,10 +5,7 @@
   <div id="chat-box">
     <div id="chat-messages" phx-update="append" phx-hook="ChatMessages">
       <%= for message <- @messages do %>
-        <p id={"msg-#{@nbr_messages}"} class="message">
-        <strong><%= message.username %>:</strong>  <%= message.content %>
-        </p>
-        <hr id={"hr-#{@nbr_messages}"}>
+        <%= display_message(message, @nbr_messages)%>
       <% end %>
     </div>
 
@@ -24,10 +21,10 @@
     </.form>
   </div>
 
-  <div id="user-list" class="flex-child">
-      <p class="title"><strong>Users in room:</strong></p>
-      <p>Placeholder user 1</p>
-      <p>Placeholder user 2</p>
+  <div id="user-list" class="flex-child" >
+      <p id="users-title" class="title"><strong>Users in room:</strong></p>
+      <%= for user <- @users  do %>
+        <p id={"u-" <> user} ><%= user %></p>
+      <% end %>
   </div>
-
 </div>

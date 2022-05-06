@@ -18,8 +18,9 @@ defmodule ChatWeb.RoomLive do
         topic: topic,
         username: username,
         message: "",
-        messages: [%{username: "System", content: "Welcome to the chat :)"}],
+        messages: [%{type: :system, content: "Welcome to the chat :)"}],
         nbr_messages: 1,
+        users: [],
         temporary_assigns: [messages: []]
     )}
   end
@@ -40,11 +41,41 @@ defmodule ChatWeb.RoomLive do
   def handle_info(%{event: "presence_diff", payload: %{joins: joins, leaves: leaves}}, socket) do
     join_messages = joins
       |> Map.keys()
-      |> Enum.map(fn username -> %{username: "System", content: "#{username} joined"} end)
+      |> Enum.map(fn username -> %{type: :system, content: "#{username} joined"} end)
     leave_messages = leaves
       |> Map.keys()
-      |> Enum.map(fn username -> %{username: "System", content: "#{username} left"} end)
-    {:noreply, assign(socket, messages: join_messages ++ leave_messages, nbr_messages: (socket.assigns.nbr_messages + 1))}
+      |> Enum.map(fn username -> %{type: :system, content: "#{username} left"} end)
+
+    user_list = ChatWeb.Presence.list(socket.assigns.topic)
+      |> Enum.map(fn user -> Tuple.to_list(user) |> List.first() end)
+    {
+      :noreply,
+      assign(
+        socket,
+        messages: join_messages ++ leave_messages,
+        nbr_messages: (socket.assigns.nbr_messages + 1),
+        users: user_list
+      )
+    }
+  end
+
+
+  def display_message(%{type: :system, content: content}, nbr_messages) do
+    ~E"""
+      <p id="msg-<%=nbr_messages%>" class="message">
+        <em><%= content %></em>
+      </p>
+      <hr id="msg-<%=nbr_messages%>">
+    """
+  end
+
+  def display_message(%{username: username, content: content}, nbr_messages) do
+    ~E"""
+      <p id="msg-<%=nbr_messages%>" class="message">
+      <strong><%= username %>:</strong>  <%= content %>
+      </p>
+      <hr id="hr-<%=nbr_messages%>">
+    """
   end
 
 end
